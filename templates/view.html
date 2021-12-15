@@ -40,7 +40,16 @@
         display_c();
     }
 
-    const socket = io(`ws://localhost:${PORT}`, {path: '/ws/socket.io/'});
+    // Support TLS-specific URLs, when appropriate.
+        if (window.location.protocol == "https:") {
+            var ws_scheme = "wss://";
+        } else {
+            var ws_scheme = "ws://"
+        };
+
+    // const socket = io(`ws://localhost:${PORT}`, {path: '/ws/socket.io/'});
+    // const socket = io(`${ws_scheme}://172.31.188.56:${PORT}`, {path: '/ws/socket.io/'});
+    const socket = io(ws_scheme + location.host + `:${PORT}`, {path: '/ws/socket.io/'});
 
     socket.on('new user', data => {
         socket.user = data.username
