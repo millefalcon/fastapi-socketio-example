@@ -20,3 +20,5 @@ For testing purpose, username's `johndoe` and `alice` are hardcoded.
 One can login using either of those username and any non empty string as  password. *For the demo we are not validating password*
 
 
+# TODO:
+Add test
