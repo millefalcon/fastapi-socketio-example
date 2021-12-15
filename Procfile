@@ -1,1 +1,1 @@
-web: uvicorn app:app
+web: sh run.sh

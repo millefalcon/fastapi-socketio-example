@@ -39,7 +39,7 @@
         display_c();
     }
 
-    const socket = io('ws://localhost:8000', {path: '/ws/socket.io/'});
+    const socket = io('ws://localhost:{{PORT}}', {path: '/ws/socket.io/'});
 
     socket.on('new user', data => {
         socket.user = data.username

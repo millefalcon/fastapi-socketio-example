@@ -118,7 +118,8 @@ async def login(request: Request, username: str = Form(...), password: str = For
     session_id = secrets.token_hex(16)
     request.session.update({
         session_id: username, "start_time": int(time.time()), 
-        "username": username, "sids": []
+        "username": username, "sids": [],
+        "PORT": os.environ.get('PORT', 8000)
     })
     response.set_cookie('session_id', session_id)
     return response
