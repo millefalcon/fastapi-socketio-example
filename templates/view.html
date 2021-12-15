@@ -2,14 +2,8 @@
 
 <head>
     <title>View</title>
-
-    <!-- <script src="https://cdn.socket.io/socket.io-3.0.0.js"></script> -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.4.0/socket.io.js" integrity="sha512-nYuHvSAhY5lFZ4ixSViOwsEKFvlxHMU2NHts1ILuJgOS6ptUmAGt/0i5czIgMOahKZ6JN84YFDA+mCdky7dD8A==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
-    <!-- <script defer src="{{ url_for('static', path='app.js') }}"></script> -->
-    <!-- <script defer src="app.js"></script> -->
 </head>
-<!-- <body onload=display_ct();> -->
 <body>
     <p>Hello {{ current_user }}</p>
     <span id='ct'></span>
@@ -60,29 +54,8 @@
         const el = document.createElement('li');
         el.innerHTML = text + socket.user;
         document.querySelector('ul').appendChild(el);
-        // confirm('should close');
     });
 
-    // socket.on('reply', userName => {
-    //     console.log({ userName })
-    //     // if (text === 'bye bye') {
-    //     //     logoutBtn.click();
-    //     // } else {
-    //     //     confirm('should close ?');
-    //     // }
-    //     confirm('wait ?')
-    //     if (socket.username === userName) {
-    //         logoutBtn.click();
-    //     }
-
-    // });
-
-    // socket.on('disconnect', text => {
-    //     console.log({ text })
-    //         logoutBtn.click();
-    //         confirm('should close ?');
-    // });
-    
 
     document.getElementById('sendBtn').onclick = () => {
         const text = document.getElementById('textInput').value;
@@ -92,20 +65,13 @@
     const logoutBtn = document.getElementById('logoutBtn')
 
     socket.on('logout', userName => {
-            console.log({ userName, user: socket.user });
-            confirm('should close ??');
-            // alert('hello world')
-            // if ( socket.user === userName) {
-            if ( currentUser === userName) {
-                socket.disconnect();
-                logoutBtn.click();
-            }
+        if ( currentUser === userName) {
+            socket.disconnect();
+            logoutBtn.click();
+        }
     });
 
     display_ct();
-
-    console.log('hello world');
-
 
 </script>
 </html>

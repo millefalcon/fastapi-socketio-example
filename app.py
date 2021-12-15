@@ -15,7 +15,6 @@ from starlette.responses import HTMLResponse, JSONResponse, RedirectResponse, Re
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi_socketio import SocketManager
 
 
 SECRET_KEY = os.environ.get('SECRET_KEY', 'ef4ac4e2a33e4d9e0bb34200349e3544')
@@ -48,7 +47,6 @@ class RequiresLoginException(Exception):
 
 
 app = FastAPI()
-# socket_manager = SocketManager(app=app)
 sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins="*")
 app.mount("/ws", socketio.ASGIApp(sio))
 app.add_middleware(SessionMiddleware, secret_key=SECRET_KEY)
@@ -81,11 +79,9 @@ def verify_session_id(request: Request, session_id: Optional[str] = Cookie(...))
     return username
 
 
-# @app.get("/view", dependencies=[Depends(verify_session_id)])
 @app.get("/view")
 async def view(request: Request, username: str = Depends(verify_session_id)):
     print({"session": request.session, "cookie": request.cookies})
-    # return JSONResponse({"session": request.session, "cookie": request.cookies})
     await sio.emit('message', 'hello universe')
     return templates.TemplateResponse("view.html", {
         "request": request,
@@ -98,6 +94,7 @@ async def view(request: Request, username: str = Depends(verify_session_id)):
 @app.get("/")
 def index(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
+
 
 @app.post("/login")
 async def login(request: Request, username: str = Form(...), password: str = Form(...)):
@@ -128,56 +125,19 @@ async def login(request: Request, username: str = Form(...), password: str = For
 @app.get("/logout", name="logout")
 async def logout(request: Request, username: str = Depends(verify_session_id)):
     """Logout and redirect to Login screen"""
-    print('here')
     request.session.clear()
     response = RedirectResponse(url="/", status_code=303)
     response.set_cookie('session_id', None)
-    # await sio.emit('reply', 'bye bye')
-    # await sio.emit('reply', username)
-    # import asyncio
-    # await asyncio.sleep(2)
-
     await sio.emit('logout', username)
-    import asyncio
-    # await asyncio.sleep(2)
     return response
-
-
-# socket_manager.on('join')
-# async def handle_join(sid, *args, **kwargs):
-#     await socket_manager.emit('lobby', 'User joined')
-
-# socket_manager.on('message')
-# async def handle_join(sid, *args, **kwargs):
-#     print(sid, args, kwargs)
-
-
-# socket_manager.on('connect_error')
-# async def handle_connect_error(*args, **kwargs):
-#     print('connect error', args, kwargs)
 
 
 @sio.event
 async def connect(sid, environ):
-    print("connect ", sid, environ)
-    import pprint
-    pprint.pprint(environ)
     session = environ['asgi.scope']['session']
-    # await sio.emit('message', 'hello world')
     await sio.emit('new user', session)
 
-@sio.event
-async def chat_message(sid, data):
-    print("message ", sid, data)
-    await sio.emit('reply', room=sid)
 
 @sio.event
 async def message(sid, data):
-    print("message ", sid, data)
-    # await sio.emit('reply', room=sid)
     await sio.emit('message', data, room=sid)
-
-
-@sio.event
-def disconnect(sid):
-    print('disconnect ', sid)
