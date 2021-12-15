@@ -8,7 +8,6 @@
     <p>Hello {{ current_user }}</p>
     <span id='ct'></span>
     <br/>
-    Seconds since Login: <span id='since'></span>
     <button type="button"><a id="logoutBtn" href="{{ url_for('logout') }}" style="text-decoration: none;">Logout</a></button>
     <input id="textInput" placeholder="message">
     <button id="sendBtn">Send</button>
@@ -30,7 +29,6 @@
     function display_ct() {
         var x = new Date()
         document.getElementById('ct').innerHTML = x;
-        document.getElementById('since').innerHTML = Math.floor((new Date().getTime() - (startTime * 1000)) / 1000);
         display_c();
     }
 
@@ -41,9 +39,7 @@
             var ws_scheme = "ws://"
         };
 
-    // const socket = io(`ws://localhost:${PORT}`, {path: '/ws/socket.io/'});
-    // const socket = io(`${ws_scheme}://172.31.188.56:${PORT}`, {path: '/ws/socket.io/'});
-    const socket = io(ws_scheme + location.host + `:${PORT}`, {path: '/ws/socket.io/'});
+    const socket = io(ws_scheme + location.host, {path: '/ws/socket.io/'});
 
     socket.on('new user', data => {
         socket.user = data.username
@@ -72,6 +68,5 @@
     });
 
     display_ct();
-
 </script>
 </html>
