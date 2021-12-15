@@ -27,6 +27,7 @@
 <script defer type="text/javascript">
     const startTime = {{ start_time }}
     const currentUser = '{{ current_user }}'
+    const PORT = '{{ PORT }}'
     function display_c() {
         var refresh = 1000;
         mytime = setTimeout('display_ct()', refresh)
@@ -39,7 +40,7 @@
         display_c();
     }
 
-    const socket = io('ws://localhost:{{PORT}}', {path: '/ws/socket.io/'});
+    const socket = io(`ws://localhost:${PORT}`, {path: '/ws/socket.io/'});
 
     socket.on('new user', data => {
         socket.user = data.username
