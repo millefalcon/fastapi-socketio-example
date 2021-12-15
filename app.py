@@ -90,7 +90,8 @@ async def view(request: Request, username: str = Depends(verify_session_id)):
     return templates.TemplateResponse("view.html", {
         "request": request,
         "current_user": username,
-        "start_time": request.session.get('start_time', int(time.time()))
+        "start_time": request.session.get('start_time', int(time.time())),
+        "PORT": os.environ.get('PORT', 8000)
     })
 
 
@@ -118,8 +119,7 @@ async def login(request: Request, username: str = Form(...), password: str = For
     session_id = secrets.token_hex(16)
     request.session.update({
         session_id: username, "start_time": int(time.time()), 
-        "username": username, "sids": [],
-        "PORT": os.environ.get('PORT', 8000)
+        "username": username, "sids": []
     })
     response.set_cookie('session_id', session_id)
     return response
