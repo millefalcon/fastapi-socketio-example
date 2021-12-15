@@ -94,6 +94,10 @@ async def view(request: Request, username: str = Depends(verify_session_id)):
 
 @app.get("/")
 def index(request: Request):
+    # if there's some session, the user may likely be logged in
+    # try redirecting to the /view
+    if request.session:
+        return RedirectResponse(url="/view", status_code=303)
     return templates.TemplateResponse("index.html", {"request": request})
 
 
